@@ -2,51 +2,105 @@
 	<head>
 		<script type="module" src="day00/day00_a.js"></script>
 		<script type="module">
+			function createCodeElem(code) {
+			    let res = document.createElement('code');
+			    res.innerText = code;
+			    return res;
+			}
+
             function render() {
                 const dayNo = this.value;
                 const moduleAName = `./day${dayNo}/day${dayNo}_a.js`;
                 const moduleBName = `./day${dayNo}/day${dayNo}_b.js`;
 
+                // update aoc url
+				let anchor = document.createElement('a');
+				anchor.href = "https://adventofcode.com/2017/day/" + parseInt(dayNo);
+				anchor.innerText = "Challenge";
+				document.getElementById('challenge').innerHTML = "";
+                document.getElementById('challenge').appendChild(anchor);
+
+                // solve part one
                 import(moduleAName).then(module => {
                     new module.default().solve().then(res => {
-                    	document.getElementById('result-a').innerHTML = res;
+                    	document.getElementById('result-a').appendChild(createCodeElem(res));
 					});
-            	}).catch(() => console.log(`Did not find module ${moduleBName}`));
+            	}).catch(() => document.getElementById('result-a').innerHTML = `Did not find module ${moduleBName}`);
 
+                // solve part two
                 import(moduleBName).then(module => {
                     new module.default().solve().then(res => {
-                        document.getElementById('result-b').innerHTML = res;
+                        document.getElementById('result-b').appendChild(createCodeElem(res));
                     });
-                }).catch(() => console.log(`Did not find module ${moduleBName}`));
+                }).catch(() => document.getElementById('result-b').innerHTML = `Did not find module ${moduleBName}`);
 
             }
-			(() => {
+		    (() => {
                 document.getElementById('days-select').addEventListener('change', render);
-                // fire selection for the first time
+                // fire pre-selection for the first time
 				document.querySelector('option:last-child').selected = 'true';
 				render.bind(document.querySelector('option:last-child'))();
             })()
 		</script>
 		<style>
 			body {
+				background: #0f0f23;
+				color: #cccccc;
+				font-size: 14pt;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				background-color: lightgrey;
+				font-family: "Source Code Pro", monospace;
 			}
 			body > div {
-				background-color: white;
-				box-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.6);
-                border-radius: 1em;
+				/*background-color: white;*/
 				padding: 1em;
 				min-height: 15em;
 				min-width: 20em;
-
+			}
+			h2 {
+				color: #ffffff;
+				font-size: 1em;
+				font-weight: normal;
+			}
+			h2 {
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
+			a {
+				color: #009900;
+				text-decoration: none;
+			}
+			a:hover {
+				color: #99ff99;
+				text-shadow: 0 0 2px #99ff99, 0 0 5px #99ff99;
+			}
+			code {
+				position: relative;
+				display: inline-block;
+				margin: 0;
+				padding: 0;
+			}
+			code:before {
+				z-index: -1;
+				content: "";
+				position: absolute;
+				display: block;
+				left: -2px;
+				right: -2px;
+				top: 3px;
+				bottom: 0px;
+				border: 1px solid #333340;
+				background: #10101a;
+			}
+			#challenge {
+				float: right;
 			}
 		</style>
 	</head>
 	<body>
 		<div>
+			<h2>--- AoC 2018 JavaScript ---</h2>
 			<span>Day:</span>
 			<select id="days-select">
 				<option value="00">00</option>
@@ -105,10 +159,10 @@
 				<option value="23">23</option>
 				<option value="24">24</option> -->
 			</select>
-			<hr/>
-			<h3>Result A:</h3>
+			<span id="challenge"></span>
+			<h2>--- Result One ---</h2>
 			<div id="result-a"></div>
-			<h3>Result B:</h3>
+			<h2>--- Result Two ---</h2>
 			<div id="result-b"></div>
 		</div>
 	</body>
