@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+		<link rel="stylesheet" href="aoc.css">
 		<script type="module">
 			function createCodeElem(code) {
 			    let res = document.createElement('code');
@@ -38,72 +39,10 @@
 				render.bind(document.querySelector('option:last-child'))();
             })()
 		</script>
-		<style>
-			body {
-				background: #0f0f23;
-				color: #cccccc;
-				font-size: 14pt;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				font-family: "Source Code Pro", monospace;
-			}
-			body > div {
-				padding: 1em;
-				min-height: 15em;
-				min-width: 20em;
-			}
-			h2 {
-				color: #ffffff;
-				font-size: 1em;
-				font-weight: normal;
-				margin-top: 1em;
-				margin-bottom: 1em;
-			}
-			a {
-				color: #009900;
-				text-decoration: none;
-			}
-			a:hover {
-				color: #99ff99;
-				text-shadow: 0 0 2px #99ff99, 0 0 5px #99ff99;
-			}
-			code {
-				position: relative;
-				display: inline-block;
-				margin: 0;
-				padding: 0;
-			}
-			code:before {
-				z-index: -1;
-				content: "";
-				position: absolute;
-				display: block;
-				left: -2px;
-				right: -2px;
-				top: 3px;
-				bottom: 0px;
-				border: 1px solid #333340;
-				background: #10101a;
-			}
-			noscript {
-				position: fixed;
-				height: 100%;
-				width: 100%;
-				z-index: 999;
-				background: #0f0f23;
-			}
-			#result-a, #result-b {
-				min-height: 1.5em;
-			}
-			#challenge {
-				float: right;
-			}
-		</style>
 	</head>
 	<body>
 		<div>
-			<h2>--- AoC 2018 JavaScript ---</h2>
+			<h1>AoC 2018 in JavaScript</h1>
 			<noscript>
 				Whoops, please enable JavaScript in your browser.
 			</noscript>
