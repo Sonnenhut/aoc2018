@@ -4,7 +4,7 @@ import { toBe } from "../common/assert.js";
 
 export default class Day00_a {
     async solve() {
-        this.solveIt('11 22', '3');
+        this.solveIt('1122', '3');
         this.solveIt('1111', '4');
         this.solveIt('1234', '0');
         this.solveIt('91212129', '9');

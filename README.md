@@ -8,5 +8,6 @@ Uses a bunch of interesting stuff:
  - [static import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
  - [code element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code)
  - [noscript element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript)
+ - [bind (scope, this)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind)
  
  built with: [vanilla-js](http://vanilla-js.com/)

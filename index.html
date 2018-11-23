@@ -9,6 +9,10 @@
 			    return res;
 			}
 
+			function showErrorLog(msg) {
+			    document.getElementById('error-container').appendChild(createCodeElem(msg));
+			}
+
             function render() {
                 const dayNo = this.value;
                 const moduleAName = `./day${dayNo}/day${dayNo}_a.js`;
@@ -37,6 +41,16 @@
                 // fire pre-selection for the first time
 				document.querySelector('option:last-child').selected = 'true';
 				render.bind(document.querySelector('option:last-child'))();
+
+                // overwrite console.error to show on screen
+                let _error = console.error;
+                console.error = function(message,...optionalParams) {
+                    if(optionalParams.length) {
+                    	_error(message, optionalParams);
+                    } else { _error(message) }
+                    document.getElementById('error-container').className=""; // unhide
+					showErrorLog(message);
+				}
             })()
 		</script>
 	</head>
@@ -110,6 +124,9 @@
 				<div id="result-a"></div>
 				<h2>--- Result Two ---</h2>
 				<div id="result-b"></div>
+				<div id="error-container" class="hidden">
+					<h2>--- Error Log ---</h2>
+				</div>
 			</div>
 		</div>
 	</body>
