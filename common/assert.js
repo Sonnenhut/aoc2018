@@ -1,5 +1,5 @@
-export function assertEquals(left, right) {
+export function toBe(left, right) {
     if(left !== right) {
-        console.log(`Expected ${left} is not equal ${right}`);
+        console.error(`Expected ${left} is not equal ${right}`);
     }
 }

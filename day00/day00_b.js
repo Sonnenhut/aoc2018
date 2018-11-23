@@ -1,5 +1,5 @@
-import {loadInputB} from '../common/inputs.js'
-import {assertEquals} from "../common/assert.js";
+import {toBe} from "../common/assert.js";
+import {fileAsText} from "../common/files.js";
 
 export default class Day00_b {
     async solve() {
@@ -8,7 +8,7 @@ export default class Day00_b {
         this.solveIt('123425', 4);
         this.solveIt('123123', 12);
         this.solveIt('12131415', 4);
-        return loadInputB('00').then(input => this.solveIt(input, 1278));
+        return fileAsText('day00/input.txt').then(input => this.solveIt(input, 1278));
     }
 
     solveIt(input, expectedRes) {
@@ -20,7 +20,7 @@ export default class Day00_b {
                 result += parseInt(input.charAt(i));
             }
         }
-        assertEquals(parseInt(result), parseInt(expectedRes));
+        toBe(parseInt(result), parseInt(expectedRes));
         return result;
     }
 }
