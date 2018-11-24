@@ -26,14 +26,14 @@
                     new module.default().solve().then(res => {
                     	document.getElementById('result-a').appendChild(createCodeElem(res));
 					});
-            	}).catch(() => document.getElementById('result-a').innerHTML = `Did not find module ${moduleBName}`);
+            	}).catch(() => console.log(`Did not find module ${moduleAName}`));
 
                 // solve part two
                 import(moduleBName).then(module => {
                     new module.default().solve().then(res => {
                         document.getElementById('result-b').appendChild(createCodeElem(res));
                     });
-                }).catch(() => document.getElementById('result-b').innerHTML = `Did not find module ${moduleBName}`);
+                }).catch(() => console.log(`Did not find module ${moduleBName}`));
 
             }
 		    (() => {
@@ -122,7 +122,7 @@
 				<a id="challenge" href="https://adventofcode.com/">Challenge</a>
 				<h2>--- Result One ---</h2>
 				<div id="result-a"></div>
-				<h2>--- Result Two ---</h2>
+				<h2>--- Result Two  ---</h2>
 				<div id="result-b"></div>
 				<div id="error-container" class="hidden">
 					<h2>--- Error Log ---</h2>
