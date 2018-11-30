@@ -1,5 +1,4 @@
 function toBe(left, right) {
-    console.log(left, right);
     if(left !== right) {
         console.error(`Expected ${left} is not equal ${right}`);
     } else {
