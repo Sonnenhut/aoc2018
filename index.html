@@ -24,17 +24,17 @@
 
                 // solve part one
                 import(moduleAName).then(module => {
-                    new module.default().solve().then(res => {
+                    module.default().then(res => {
                     	document.getElementById('result-a').appendChild(createCodeElem(res));
 					});
-            	}).catch(() => console.log(`Did not find module ${moduleAName}`));
+            	}).catch((e) => console.log(`Did not find module ${moduleAName}`, e));
 
                 // solve part two
                 import(moduleBName).then(module => {
-                    new module.default().solve().then(res => {
+                    module.default().then(res => {
                         document.getElementById('result-b').appendChild(createCodeElem(res));
                     });
-                }).catch(() => console.log(`Did not find module ${moduleBName}`));
+                }).catch((e) => console.log(`Did not find module ${moduleBName}`, e));
 
             }
 		    (() => {
