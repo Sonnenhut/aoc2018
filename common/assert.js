@@ -1,8 +1,12 @@
-function toBe(left, right, invert) {
-    if(left !== right && invert !== true) {
-        console.error(`Expected ${left} is not equal ${right}`);
-    } else if(left === right && invert) {
-        console.error(`Expected ${left} should not equal ${right}`);
+function toBe(left, right) {
+    if(left !== right) {
+        console.error(`Expected ${right} is not equal ${left}`);
+    } else {
+        return left;
+    }
+}function notToBe(left, right) {
+    if(left === right) {
+        console.error(`Expected ${right} should not equal ${left}`);
     } else {
         return left;
     }
@@ -19,8 +23,8 @@ Number.prototype.toBe = function(right) {
 
 Number.prototype.notToBe = function(right) {
     if(this % 1 === 0) {
-        return toBe(parseInt(this), right, true);
+        return notToBe(parseInt(this), right);
     } else {
-        return toBe(parseFloat(this), right, true);
+        return notToBe(parseFloat(this), right);
     }
 };
