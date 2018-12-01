@@ -4,7 +4,8 @@ function toBe(left, right) {
     } else {
         return left;
     }
-}function notToBe(left, right) {
+}
+function notToBe(left, right) {
     if(left === right) {
         console.error(`Expected ${right} should not equal ${left}`);
     } else {
