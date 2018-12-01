@@ -6,9 +6,11 @@
 		<script src="./common/assert.js"></script>
 		<script type="module">
 			function createCodeElem(code) {
-			    let res = document.createElement('code');
-			    res.innerText = code;
-			    return res;
+			    let wrapper = document.createElement('div');
+			    let codeElem = document.createElement('code');
+                codeElem.innerText = code;
+			    wrapper.appendChild(codeElem);
+			    return wrapper;
 			}
 
 			function showErrorLog(msg) {
@@ -66,8 +68,8 @@
 				<span>Day:</span>
 				<select id="days-select">
 					<option value="00">00</option>
-					<!-- <option value="01">01</option>
-					<option value="02">02</option>
+					<option value="01">01</option>
+					<!-- <option value="02">02</option>
 					<option value="03">03</option>
 					<option value="04">04</option>
 					<option value="05">05</option>

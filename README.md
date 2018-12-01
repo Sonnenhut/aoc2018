@@ -9,5 +9,6 @@ Uses a bunch of interesting stuff:
  - [code element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code)
  - [noscript element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript)
  - [bind (scope, this)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind)
+ - [regexp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
  
  built with: [vanilla-js](http://vanilla-js.com/)
