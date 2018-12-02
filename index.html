@@ -28,6 +28,7 @@
                 // solve part one
                 import(moduleAName).then(module => {
                     module.default().then(res => {
+                        document.getElementById('result-a').innerHTML = "";
                     	document.getElementById('result-a').appendChild(createCodeElem(res));
 					});
             	}).catch((e) => console.log(`Did not find module ${moduleAName}`, e));
@@ -35,6 +36,7 @@
                 // solve part two
                 import(moduleBName).then(module => {
                     module.default().then(res => {
+                        document.getElementById('result-b').innerHTML = "";
                         document.getElementById('result-b').appendChild(createCodeElem(res));
                     });
                 }).catch((e) => console.log(`Did not find module ${moduleBName}`, e));
