@@ -25,6 +25,12 @@
                 // update aoc url
 				document.getElementById('challenge').href = "https://adventofcode.com/2018/day/" + parseInt(dayNo);
 
+				// initialize
+                document.getElementById('result-a').innerHTML = "";
+                document.getElementById('result-a').appendChild(createCodeElem('...'));
+                document.getElementById('result-b').innerHTML = "";
+                document.getElementById('result-b').appendChild(createCodeElem('...'));
+
                 // solve part one
                 import(moduleAName).then(module => {
                     module.default().then(res => {
