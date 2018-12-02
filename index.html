@@ -26,27 +26,22 @@
 				document.getElementById('challenge').href = "https://adventofcode.com/2018/day/" + parseInt(dayNo);
 
 				// initialize
-                document.getElementById('result-a').innerHTML = "";
-                document.getElementById('result-a').appendChild(createCodeElem('...'));
-                document.getElementById('result-b').innerHTML = "";
-                document.getElementById('result-b').appendChild(createCodeElem('...'));
+                const blockA = document.getElementById('result-a');
+                const blockB = document.getElementById('result-b');
+                blockA.innerHTML = "";
+                blockA.appendChild(createCodeElem('...'));
+                blockB.innerHTML = "";
+                blockB.appendChild(createCodeElem('...'));
 
-                // solve part one
-                import(moduleAName).then(module => {
-                    module.default().then(res => {
-                        document.getElementById('result-a').innerHTML = "";
-                    	document.getElementById('result-a').appendChild(createCodeElem(res));
-					});
-            	}).catch((e) => console.log(`Did not find module ${moduleAName}`, e));
-
-                // solve part two
-                import(moduleBName).then(module => {
-                    module.default().then(res => {
-                        document.getElementById('result-b').innerHTML = "";
-                        document.getElementById('result-b').appendChild(createCodeElem(res));
-                    });
-                }).catch((e) => console.log(`Did not find module ${moduleBName}`, e));
-
+                const solvePart = (moduleName, block) => {
+                    return import(moduleName).then(module => module.default())
+						.then(res => {
+							block.innerHTML = "";
+							block.appendChild(createCodeElem(res));
+						}).catch((e) => console.log(`Did not find module ${moduleName}`, e));
+				};
+                //look at this... why is it not executing after another...
+                solvePart(moduleAName, blockA).then(() => solvePart(moduleBName, blockB));
             }
 		    (() => {
                 document.getElementById('days-select').addEventListener('change', render);
