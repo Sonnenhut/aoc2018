@@ -29,3 +29,7 @@ Number.prototype.notToBe = function(right) {
         return notToBe(parseFloat(this), right);
     }
 };
+
+String.prototype.toBe = function(right) {
+    return toBe(this.valueOf(), right.valueOf());
+};
