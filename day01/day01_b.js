@@ -18,16 +18,17 @@ function solve(input) {
     input = input.split(' ').map(text => parseInt(text));
     let seq = infiniteSeq(input);
 
-    let frequencies = [0];
+    let frequencies = new Set();
+    frequencies.add(0);
     let currFreq = 0;
     let res = undefined;
     while (res === undefined) {
         currFreq += seq.next().value;
-        if(frequencies.includes(currFreq)) {
+        if(frequencies.has(currFreq)) {
             res = currFreq;
             break;
         } else {
-            frequencies.push(currFreq);
+            frequencies.add(currFreq);
         }
     }
     return res;
