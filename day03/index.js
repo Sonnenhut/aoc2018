@@ -40,6 +40,7 @@ class Day03 extends HTMLElement {
 }
 customElements.define('day-03', Day03);
 
+// maybe try to 'shrink' the svg to fit the screen: https://css-tricks.com/scale-svg/
 // try to show overlaps with a filter:
 //https://stackoverflow.com/questions/38751756/what-is-the-best-approach-for-overlapping-svg-elements-area-fill
 /*
