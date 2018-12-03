@@ -1,5 +1,7 @@
 import {fileAsText} from '../common/files.js'
 
+const OVERWRITTEN = 'X';
+
 // some old aoc to see test my setup
 export default async function main() {
     const testClaim = Claim.parse('#122 @ 286,440: 19x24');
@@ -26,7 +28,7 @@ function solve(input) {
         return fabric;
     }, []);
     return claimedFabric.reduce((prev, row) => {
-        return prev + row.reduce((prev, elem) => elem === 'X' ? prev + 1 : prev, 0)
+        return prev + row.reduce((prev, elem) => elem === OVERWRITTEN ? prev + 1 : prev, 0)
     }, 0);
 }
 
@@ -42,7 +44,7 @@ export function overwriteFabric(fabric, claim) {
             } else if(fabric[x][y]) {
                 res.add(fabric[x][y]);
                 res.add(value);
-                value = 'X';
+                value = OVERWRITTEN;
             }
             fabric[x][y] = value;
         }
