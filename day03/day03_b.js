@@ -12,7 +12,7 @@ export default async function main() {
     });
 };
 
-function solve(input) {
+export function solve(input) {
     const claims = input.split(/\r?\n|\n/g).map(text => Claim.parse(text));
     let fabric = [];
     const overwrittenClaimIds = claims.reduce((overwIds, claim) => {

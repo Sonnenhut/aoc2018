@@ -18,20 +18,25 @@
 			}
 
             function render() {
-                const dayNo = this.value;
+                const dayNo = this.value.replace('*','');
+			    const renderCustomElement = this.value.includes('*');
                 const moduleAName = `./day${dayNo}/day${dayNo}_a.js`;
                 const moduleBName = `./day${dayNo}/day${dayNo}_b.js`;
+                const renderName = `./day${dayNo}/index.js`;
 
                 // update aoc url
 				document.getElementById('challenge').href = "https://adventofcode.com/2018/day/" + parseInt(dayNo);
 
 				// initialize
+				const render = document.getElementById('render');
                 const blockA = document.getElementById('result-a');
                 const blockB = document.getElementById('result-b');
-                blockA.innerHTML = "";
+                blockA.innerHTML = '';
                 blockA.appendChild(createCodeElem('...'));
-                blockB.innerHTML = "";
+                blockB.innerHTML = '';
                 blockB.appendChild(createCodeElem('...'));
+                render.innerHTML = '';
+                render.className = 'hidden';
 
                 const solvePart = (moduleName, block) => {
                     return import(moduleName).then(module => module.default())
@@ -40,8 +45,15 @@
 							block.appendChild(createCodeElem(res));
 						}).catch((e) => console.log(`Did not find module ${moduleName}`, e));
 				};
-                //look at this... why is it not executing after another...
                 solvePart(moduleAName, blockA).then(() => solvePart(moduleBName, blockB));
+
+                // render when there is something extra to render
+                if(renderCustomElement) {
+					import(renderName).then(function() {
+							render.className = ''; // unhide
+							render.innerHTML = `<day-${dayNo}></day-${dayNo}>`;
+						}).catch((e) => console.log(`Did not find module's custom element`, e));
+                }
             }
 		    (() => {
                 document.getElementById('days-select').addEventListener('change', render);
@@ -55,7 +67,7 @@
                     if(optionalParams.length) {
                     	_error(message, optionalParams);
                     } else { _error(message) }
-                    document.getElementById('error-container').className=""; // unhide
+                    document.getElementById('error-container').className = ''; // unhide
 					showErrorLog(message);
 				}
             })()
@@ -72,7 +84,7 @@
 				<select id="days-select">
 					<option value="01">01</option>
 					<option value="02">02</option>
-					<option value="03">03</option>
+					<option value="03*">03*</option>
                     <!-- <option value="04">04</option>
                     <option value="05">05</option>
                     <option value="06">06</option>
@@ -134,6 +146,8 @@
 					<h2>--- Error Log ---</h2>
 				</div>
 			</div>
+		</div>
+		<div id="render" class="hidden">
 		</div>
 	</body>
 </html>
