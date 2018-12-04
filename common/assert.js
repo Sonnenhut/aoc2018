@@ -17,6 +17,14 @@ function notToBe(left, right) {
     }
 }
 
+Boolean.prototype.toBe = function(right) {
+    if(this.valueOf() !== right) {
+        console.error(`Expected ${right} is not equal ${this}`);
+    } else {
+        return this
+    }
+};
+
 Number.prototype.toBe = function(right) {
     // check if left is int or float
     if(this % 1 === 0) {
