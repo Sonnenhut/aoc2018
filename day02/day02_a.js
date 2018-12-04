@@ -1,7 +1,5 @@
 import {fileAsText} from '../common/files.js'
 
-
-// some old aoc to see test my setup
 export default async function main() {
     solve('aa').toBe(0);
     solve('aabb').toBe(0);
@@ -37,12 +35,3 @@ function solve(input) {
     const threeCnt = rawNo.map(item => item[1]).reduce((prev, curr) => prev + curr);
     return twoCnt * threeCnt;
 }
-
-Map.prototype.inc = function(key) {
-    let prev = this.get(key);
-    if(prev) {
-        this.set(key, prev + 1);
-    } else {
-        this.set(key, 1)
-    }
-};

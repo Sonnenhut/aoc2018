@@ -1,6 +1,5 @@
 import {fileAsText} from '../common/files.js'
 
-// some old aoc to see test my setup
 export default async function main() {
     solve('+1 +1 +1').toBe(3);
     solve('+1 +1 -2').toBe(0);

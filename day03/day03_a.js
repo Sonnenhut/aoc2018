@@ -2,7 +2,6 @@ import {fileAsText} from '../common/files.js'
 
 const OVERWRITTEN = 'X';
 
-// some old aoc to see test my setup
 export default async function main() {
     const testClaim = Claim.parse('#122 @ 286,440: 19x24');
     testClaim.id.toBe(122);
