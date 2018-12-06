@@ -16,3 +16,9 @@ Uses a bunch of interesting stuff:
  - [setAttributeNS](https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttributeNS)
  
  built with: [vanilla-js](http://vanilla-js.com/)
+ 
+ 
+My thoughts on JavaScript:
+ - lacking proper equality check (i.e. Java .equals() check in a Set - how does that properly work out with JS objects)
+ - reduce, filter, split, map are very nice "out of the box" to use
+ - A proper unit-testing suite that integrates into the IDE is really worth it - 
