@@ -45,6 +45,9 @@ Number.prototype.notToBe = function(right) {
 String.prototype.toBe = function(right) {
     return toBe(this.valueOf(), right.valueOf());
 };
+String.prototype.notToBe = function(right) {
+    return notToBe(this.valueOf(), right.valueOf());
+};
 
 Array.prototype.toBe = function(right) {
     const logError = () => console.error(`Expected '${right}' is not equal '${this}'`);
