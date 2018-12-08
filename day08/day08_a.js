@@ -59,7 +59,6 @@ class Node {
         if(this.children.length === 0) {
             // If a node has no child nodes, its value is the sum of its metadata entries.
             res = this.metadataSum();
-            console.log('without childs', res);
         } else {
             // However, if a node does have child nodes, the metadata entries become indexes which refer to those child nodes.
             res = this.metadata.map(meta => meta - 1)
@@ -71,7 +70,6 @@ class Node {
                                     return res;
                                 })
                                 .sum();
-            console.log('with childs', res);
         }
         return res;
     }
