@@ -1,67 +1,116 @@
 import {fileAsText} from '../common/files.js'
 
-export default async function main() {
-    solve('Step B must be finished before step C can begin.\nStep A must be finished before step B can begin.').toBe('ABC');
-    solve('Step C must be finished before step A can begin.\n' +
-        'Step C must be finished before step F can begin.\n' +
-        'Step A must be finished before step B can begin.\n' +
-        'Step A must be finished before step D can begin.\n' +
-        'Step B must be finished before step E can begin.\n' +
-        'Step D must be finished before step E can begin.\n' +
-        'Step F must be finished before step E can begin.').toBe('CABDFE');
+export const GENERIC_EXAMPLE = 'Step B must be finished before step C can begin.\nStep A must be finished before step B can begin.';
+export const DAY_EXAMPLE = 'Step C must be finished before step A can begin.\n' +
+    'Step C must be finished before step F can begin.\n' +
+    'Step A must be finished before step B can begin.\n' +
+    'Step A must be finished before step D can begin.\n' +
+    'Step B must be finished before step E can begin.\n' +
+    'Step D must be finished before step E can begin.\n' +
+    'Step F must be finished before step E can begin.';
 
-    new Workers(0,0).workTimeForStep('A').toBe(1);
-    new Workers(0,0).workTimeForStep('Z').toBe(26);
-    new Workers(0,60).workTimeForStep('Z').toBe(86);
+export default async function main() {
+    solve_a(GENERIC_EXAMPLE).toBe('ABC');
+    solve_a(DAY_EXAMPLE).toBe('CABDFE');
 
     return fileAsText('day07/input.txt').then(input => {
-        return solve(input, 5, 60).notToBe('BVUHYE').notToBe('BETPLUFNGRJVADOHWMXKZQCISY').toBe('BETUFNVADWGPLRJOHMXKZQCISY');
+        return solve_a(input, 1, 0) //
+            .notToBe('BVUHYE') //
+            .notToBe('BETPLUFNGRJVADOHWMXKZQCISY') //
+            .toBe('BETUFNVADWGPLRJOHMXKZQCISY');
     });
 };
 
-export function solve(input, workerCnt = 1, workTimeOffset = 0) {
+export function solve_a(input) {
     let stepOrder = input.split(/\r?\n|\n/g).map(text => ({step: /Step (.) must/.exec(text)[1], after: /step (.) can/.exec(text)[1]}));
     const instrChain = createInstructionChain(stepOrder);
-    return new Workers(workerCnt, workTimeOffset).executeChain(instrChain, "");
+    return new SharedWork().executeChain(instrChain, "");
 }
 
-class Workers {
-    constructor(workerCnt, workTimeOffset) {
-        this.workers = new Array(workerCnt);
+export class SharedWork {
+    constructor(workerCnt = 1, workTimeOffset = 0) {
+        this.maxWorkerCnt = workerCnt;
+        this.workers = [];
         this.workTimeOffset = workTimeOffset;
+        this.elapsedTime = 0;
     }
     workTimeForStep(step) {
         const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return this.workTimeOffset + abc.indexOf(step) + 1;
     }
-    executeChain(nextIntructions, res) {
-        if(nextIntructions.length === 0) {
-            return res;
-         } else {
-            // unique/sort values
-            nextIntructions = [... nextIntructions.reduce((acc, curr) => acc.add(curr), new Set())];
-            nextIntructions.sort(compare_step);
-            // look for the next one to execute
-            for(let i=0; i < nextIntructions.length;i++) {
-                const nextInstr = nextIntructions[i];
-                if(res.includes(nextInstr.step)) {
-                    // already executed
-                    nextIntructions.push(...nextInstr.afterInstr);
-                    nextIntructions.splice(i,1);
-                    break;
-                } else if(Instruction.canExecuteStep(nextInstr, nextIntructions)) {
-                    nextIntructions.push(...nextInstr.afterInstr);
-                    res += nextInstr.step;
-                    nextIntructions.splice(i,1);
-                    break;
-                }
-                // continue to look at the next instruction (maybe that one can be executed)
+    executeChain(nextIntructions) {
+        let res = "";
+        nextIntructions.sort(compare_step);
+        while(nextIntructions.length > 0 || this.workers.length !== 0) {
+            const nextInstrToExecute = this.findNextExecutable(nextIntructions);
+            if(this.areWorkersFree() && nextInstrToExecute) {
+                // lets do some work and remove the instr from the array
+                this.scheduleWorker(nextInstrToExecute);
+                nextIntructions = nextIntructions.filter(other => other !== nextInstrToExecute);
+            } else {
+                const finishedInstructions = this.tickUntilFirstWorkerFinished();
+                // finish the instructions and add their work to the result
+                finishedInstructions.forEach(instr => nextIntructions.push(... instr.afterInstr));
+                finishedInstructions.forEach(instr => res += instr.step);
+                // unique/sort values after adding some
+                nextIntructions = withoutDuplicates(nextIntructions);
+                nextIntructions.sort(compare_step);
             }
-            return this.executeChain(nextIntructions, res)
         }
+        return res;
+    }
+    findNextExecutable(nextInstructions) {
+        let res;
+        const workload = [... nextInstructions, ... this.workers.map(worker => worker.instruction)];
+        // look for the next one to execute
+        for (let i = 0; i < nextInstructions.length; i++) {
+            const nextInstr = nextInstructions[i];
+            if (Instruction.canExecuteStep(nextInstr, workload)) {
+                res = nextInstr;
+                break;
+            }
+        }
+        return res;
+    }
+    areWorkersFree() {
+        return this.workers.length !== this.maxWorkerCnt;
+    }
+    tickUntilFirstWorkerFinished() {
+        // tick the time of the worker that has the least work to do
+        const lowestTimeRemaining = this.workers.reduce((lowest, curr) => lowest < curr.timeRemaining ? lowest : curr.timeRemaining, 999);
+        this.workers.forEach(worker => worker.timePassed(lowestTimeRemaining));
+        this.elapsedTime += lowestTimeRemaining;
+        // check for all workers who are now finished!
+        const finishedWorkers = this.workers.filter(worker => worker.isFinished());
+        this.workers = this.workers.filter(worker => !finishedWorkers.includes(worker)); // remove finished workers
+        return finishedWorkers.map(worker => worker.getInstruction());
+    }
+    scheduleWorker(instr) {
+        const workTime = this.workTimeForStep(instr.step);
+        this.workers.push(new Worker(workTime, instr));
+    }
+    getElapsedTime() {
+        return this.elapsedTime;
     }
 }
-function createInstructionChain(stepOrders) {
+
+class Worker {
+    constructor(workTime, instruction) {
+        this.timeRemaining = workTime;
+        this.instruction = instruction;
+    }
+    timePassed(time) {
+        this.timeRemaining -= time;
+    }
+    isFinished() {
+        return this.timeRemaining <= 0;
+    }
+    getInstruction() {
+        return this.instruction;
+    }
+}
+
+export function createInstructionChain(stepOrders) {
     // merge steporders into Instruction (with step and after step)
     const mergedInstr = allStepNames(stepOrders).map(step => {
         return stepOrders.filter(stepOrder => stepOrder.step === step).reduce((instr, stepOrder) => instr.addStepAfter(stepOrder.after), new Instruction(step));
@@ -73,7 +122,7 @@ function createInstructionChain(stepOrders) {
     return startingPoints;
 }
 
-// recursive, iterate over all instructions and the "afterInstr" and see if "currInstr" can be subsituted there
+// recursive, iterate over all instructions and the "afterInstr" and see if "currInstr" can be substituted there
 function chainInstructions(allInstr, toLookAt) {
     if(!toLookAt || toLookAt.length === 0) {
         return;
@@ -119,22 +168,27 @@ class Instruction {
         // re-sort
         this.afterInstr.sort(compare_step);
     }
+    static flatInstructions(instructions) {
+        const set = instructions.reduce((acc, curr) => {
+            acc.add(curr);
+            Instruction.flatInstructions(curr.afterInstr).forEach(item => acc.add(item));
+            return acc;
+        }, new Set());
+        return [... set];
+    }
     static canExecuteStep(instrToExecute, _otherInstructions) {
         // can execute step if no other instructions are pending with instrToExecute's step
         const otherInstructions = _otherInstructions.filter(other => other !== instrToExecute);
-        const getAllInstr = function(instructions) {
-            return instructions.reduce((acc, curr) => {
-                acc.add(curr);
-                getAllInstr(curr.afterInstr).forEach(item => acc.add(item));
-                return acc;
-            }, new Set());
-        };
-        const flattenedInstructions = [... getAllInstr(otherInstructions)];
+        const flattenedInstructions = Instruction.flatInstructions(otherInstructions);
 
         return flattenedInstructions.reduce((acc, other) => {
             return acc && other.step !== instrToExecute.step;
         }, true);
     }
+}
+
+function withoutDuplicates(arr) {
+    return [...arr.reduce((acc, curr) => acc.add(curr), new Set())];
 }
 
 function compare_step(a,b) {
