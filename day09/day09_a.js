@@ -81,7 +81,6 @@ export function parse(input) {
 class Circle {
     constructor(start, nextMarble, currentMarbleIdx) {
         this._nextMarble = nextMarble;
-        this._nextMarble = nextMarble;
         this._marble = Marble.createRing(...start);
         for(let i = 0; i < currentMarbleIdx; i++) {
             this._marble = this._marble.cw;
