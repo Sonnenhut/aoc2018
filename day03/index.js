@@ -19,19 +19,36 @@ class Day03 extends HTMLElement {
 
     render(claims, highlightedClaimID) {
         this.innerHTML = '';
+        this.innerHTML += `<style>
+                                rect {
+                                    fill: white;
+                                    stroke: black;
+                                    stroke-linejoin: bevel;
+                                    stroke-width: 0.05em;
+                                }
+                                rect:hover {
+                                    fill: red;
+                                    stroke-dasharray: 1;
+                                }
+                                rect#winner {
+                                    fill: #00cc00;
+                                }
+                            </style>`;
+
         let svgNS = "http://www.w3.org/2000/svg";
         const svg = document.createElementNS(svgNS,'svg');
         //svg.innerHTML += overlappingFilterDef + overlappingFilterStart;
-        svg.setAttributeNS(null, "height", "999");
-        svg.setAttributeNS(null, "width", "999");
+        svg.setAttribute( "height", "999");
+        svg.setAttribute( "width", "999");
         claims.map(claim => {
-            const color = claim.id === highlightedClaimID ? "#00cc00" : "white";
             let rect = document.createElementNS(svgNS, 'rect');
-            rect.setAttributeNS(null, "x", claim.x);
-            rect.setAttributeNS(null, "y", claim.y);
-            rect.setAttributeNS(null, "width", claim.w);
-            rect.setAttributeNS(null, "height", claim.h);
-            rect.setAttributeNS(null, "fill", color);
+            rect.setAttribute( "x", claim.x);
+            rect.setAttribute( "y", claim.y);
+            rect.setAttribute( "width", claim.w);
+            rect.setAttribute( "height", claim.h);
+            if(claim.id === highlightedClaimID) {
+                rect.setAttribute("id", "winner");
+            }
             return rect;
         }).forEach(rect => svg.appendChild(rect));
         this.appendChild(svg);
@@ -40,7 +57,6 @@ class Day03 extends HTMLElement {
 }
 customElements.define('day-03', Day03);
 
-// maybe try to 'shrink' the svg to fit the screen: https://css-tricks.com/scale-svg/
 // try to show overlaps with a filter:
 //https://stackoverflow.com/questions/38751756/what-is-the-best-approach-for-overlapping-svg-elements-area-fill
 /*
