@@ -78,7 +78,7 @@ export function parse(input) {
     return ({players: parseInt(playersStr), lastMarble: parseInt(lastMarbleStr)});
 }
 
-class Circle {
+export class Circle {
     constructor(start, nextMarble, currentMarbleIdx) {
         this._nextMarble = nextMarble;
         this._marble = Marble.createRing(...start);
@@ -106,7 +106,7 @@ class Circle {
     }
 }
 
-class Marble {
+export class Marble {
     constructor(self, ccw, cw) {
         this.self = self;
         this.ccw = ccw;
