@@ -14,6 +14,7 @@ Uses a bunch of interesting stuff:
  - [rect](https://developer.mozilla.org/de/docs/Web/SVG/Element/rect)
  - [createElementNS](https://developer.mozilla.org/de/docs/Web/API/Document/createElementNS)
  - [setAttributeNS](https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttributeNS)
+ - [viewBox](https://www.sarasoueidan.com/blog/svg-coordinate-systems/)
  
  built with: [vanilla-js](http://vanilla-js.com/)
  
