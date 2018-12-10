@@ -44,32 +44,23 @@ export default async function main() {
 
 var solve_store = new Map();
 
-export function solve(coords, id) {
-    let res;
-    if(id && solve_store.has(id)) {
-        res = solve_store.get(id);
-    } else {
-        let resultingCoords;
-        let snapshots = [coords];
-        let nearCoordCnt;
-        let iterations = 0;
-        do {
-            coords = coords.map(coord => coord.tick());
-            nearCoordCnt = countNearCoords(coords);
-            // check what constellation has a high count of points next to each other
-            if (nearCoordCnt > coords.length - (coords.length / 10)) {
-                // this is a candidate
-                resultingCoords = coords;
-            }
-            snapshots.push(coords);
-            iterations++;
-        } while (!resultingCoords);
-        res = ({coords: resultingCoords, iterations, snapshots});
-    }
-    if(id) {
-        solve_store.set(id, res);
-    }
-    return res;
+export function solve(coords) {
+    let resCoord;
+    let snapshots = [coords];
+    let nearCoordCnt;
+    let iterations = 0;
+    do {
+        coords = coords.map(coord => coord.tick());
+        nearCoordCnt = countNearCoords(coords);
+        // check what constellation has a high count of points next to each other
+        if (nearCoordCnt > coords.length - (coords.length / 10)) {
+            // this is a candidate
+            resCoord = coords;
+        }
+        snapshots.push(coords);
+        iterations++;
+    } while (!resCoord);
+    return ({coords: resCoord, iterations, snapshots});
 }
 
 function countNearCoords(coords) {

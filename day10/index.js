@@ -1,28 +1,29 @@
-import {fileAsText} from "../common/files.js";
-import {parse, EXAMPLE_DAY, solve} from './day10_a.js';
-
 class Day10 extends HTMLElement {
     constructor() {
         super();
     }
 
     connectedCallback() {
-        const coords = parse(EXAMPLE_DAY);
-        this.startRender(solve(coords).snapshots);
+        this.innerHTML = "<h2>--- This may take up to 10s ---</h2>";
     }
 
-    // called by day10_b
+    // called after day10_b finishes calculation
     startRender(snapshots) {
+        let toShow = snapshots.slice(snapshots.length - 300);
+
         let idx = 0;
-        // show last 100 snapshots
-        let toShow = snapshots.slice(snapshots.length - 200);
-        let interval = setInterval(() => {
-            this.render(toShow[idx]);
-            if(idx === toShow.length - 1) {
-                clearInterval(interval);
-            }
-            idx++
-        },50);
+        const renderNext = (theTimeout) => {
+            setTimeout(() => {
+                this.render(toShow[idx]);
+                const end = idx === toShow.length - 1;
+                if(!end) {
+                    const nextTime = idx > toShow.length - 10 ? theTimeout * 10 : theTimeout;
+                    renderNext(nextTime);
+                }
+                idx++
+            },theTimeout)
+        };
+        renderNext(50);
     }
 
     render(coords) {
