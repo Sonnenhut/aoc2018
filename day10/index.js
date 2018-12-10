@@ -4,7 +4,7 @@ class Day10 extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = "<h2>--- This may take up to 10s ---</h2>";
+        this.innerHTML = "<h2>--- Calculation may take up to 10s ---</h2>";
     }
 
     // called after day10_b finishes calculation
