@@ -17,7 +17,7 @@ class Day10 extends HTMLElement {
                 this.render(toShow[idx]);
                 const end = idx === toShow.length - 1;
                 if(!end) {
-                    const nextTime = idx > toShow.length - 10 ? theTimeout * 10 : theTimeout;
+                    const nextTime = idx > toShow.length - 10 ? theTimeout + 50 : theTimeout;
                     renderNext(nextTime);
                 }
                 idx++
