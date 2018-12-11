@@ -39,7 +39,6 @@ export function solve(gridSerial) {
 function showProgress(progress) {
     const day11 = document.getElementsByTagName("day-11");
     if(day11) {
-        console.log("show progress", progress);
         day11[0].render(progress);
     }
 }

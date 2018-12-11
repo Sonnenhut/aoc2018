@@ -5,7 +5,6 @@ class Day11 extends HTMLElement {
 
     connectedCallback() {
         this.render(0);
-        console.log('connected');
     }
 
     // called each time B starts to look at a new dimension
@@ -14,11 +13,10 @@ class Day11 extends HTMLElement {
             const progressEl = this.querySelector('progress');
             if(progressEl) {
                 progressEl.value = `${progress}`;
-                console.log('set value');
             }
         } else {
             const headEl = document.createElement('H2');
-            headEl.innerText = "--- Takes some time, take this progress bar (that will not update at all) ---";
+            headEl.innerText = "--- Takes forever, take this progress bar (that will not update at all) ---";
             this.appendChild(headEl);
 
             const progressEl = document.createElement('progress');
