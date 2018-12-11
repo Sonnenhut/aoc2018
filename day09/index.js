@@ -24,7 +24,7 @@ class Day09 extends HTMLElement {
             generatedHTML += `<div id="${id}"><div>${marble.self}</div></div>`;
             marble = marble.cw;
         }
-
+        //TODO revisit this. it's not showing a circle
         this.innerHTML = "<h2>--- Should revisit this, it should be a circle ---</h2>";
         this.innerHTML +=  `
         <style>           
