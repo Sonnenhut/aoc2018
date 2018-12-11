@@ -42,8 +42,6 @@ export default async function main() {
     return "GPEPPPEJ"; // shown in the rendered svg
 };
 
-var solve_store = new Map();
-
 export function solve(coords) {
     let resCoord;
     let snapshots = [coords];
