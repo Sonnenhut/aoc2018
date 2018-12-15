@@ -23,12 +23,12 @@ export function solve(input) {
     let locations = [{},{},{}];
     while(locations.length !== 1) {
         state = tick(state);
-        locations = movingLocations(state);
+        locations = findMovingLoc(state);
     }
     return locations[0];
 }
 
-function movingLocations(state) {
+function findMovingLoc(state) {
     let res = [];
     for(let y = 0; y < state.length; y++) {
         for (let x = 0; x < state[y].length; x++) {
