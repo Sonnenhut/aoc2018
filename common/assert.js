@@ -59,7 +59,7 @@ Array.prototype.toBe = function(right) {
     }
 
     for(let i = 0; i < this.length; i++) {
-        if(this[i] !== right[i]) {
+        if(this[i].toBe(right[i]) === undefined) {
             logError();
             return
         }
