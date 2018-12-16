@@ -19,7 +19,10 @@ Uses a bunch of interesting stuff:
  built with: [vanilla-js](http://vanilla-js.com/)
  
  
-My thoughts on JavaScript:
+
+
+My thoughts on JavaScript / what did I learn:
+ - using the correct datastructure can make a huge difference (i.e Marbles/Recipe from Day09/Day14 or using a Map rather than an array)
  - lacking proper equality check (i.e. Java .equals() check in a Set - how does that properly work out with JS objects)
  - reduce, filter, split, map are very nice "out of the box" to use
  - A proper unit-testing suite that integrates into the IDE is really worth it - 
