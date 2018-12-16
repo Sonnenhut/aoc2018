@@ -78,7 +78,6 @@ export function solve(searchToken) {
             cursorActive = true;
         }
     }
-    console.log('counting distance');
     return start.distance(cursor);
 }
 
