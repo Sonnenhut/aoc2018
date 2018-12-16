@@ -66,6 +66,23 @@ Array.prototype.toBe = function(right) {
     }
     return this;
 };
+Map.prototype.toBe = function(right) {
+    const logError = () => console.error(`Expected '${right}' is not equal '${this}'`);
+
+    if(this === right) return this;
+    if(right == null || this.size !== right.size) {
+        logError();
+        return;
+    }
+
+    for(let key of this.keys()) {
+        if(this.get(key).toBe(right.get(key)) === undefined) {
+            logError();
+            return;
+        }
+    }
+    return this;
+};
 
 class Expectation {
     constructor(left) {
