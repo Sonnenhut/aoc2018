@@ -2,39 +2,52 @@ import {fileAsText} from '../common/files.js'
 
 export default async function main() {
 
-    toDigitArray(9123).toBe([9,1,2,3]);
-    withNewRecipes([3,7].asMap(),0,1).toBe([3,7,1,0].asMap());
-    withNewRecipes([3,7,1,0].asMap(),0,1).toBe([3,7,1,0,1,0].asMap());
-    withNewRecipes([3,7,1,0,1,0].asMap(),4,3).toBe([3,7,1,0,1,0,1].asMap());
-    withNewRecipes([3,7,1,0,1,0,1,2,4,5,1,5,8,9,1,6,7,7,9].asMap(),6,2).toBe([3,7,1,0,1,0,1,2,4,5,1,5,8,9,1,6,7,7,9,2].asMap());
+    const chain = Recipe.createRing(3,7);
+    chain.self.toBe(3);
+    chain.next.self.toBe(7);
+    chain.next.next.self.toBe(3);
 
-    solve(5).toBe('0124515891');
-    solve(18).toBe('9251071085');
-    solve(2018).toBe('5941429882');
+
+
+    solve('01245').toBe(5);
+    solve('51589').toBe(9);
+    solve('92510').toBe(18);
+    solve('59414').toBe(2018);
+    solve('793031').toBe(42);
 
     return fileAsText('day14/input.txt').then(input => {
-        return solve(parseInt(input)).toBe('4910101614');
+        //return solve(input).toBe(4910101614);
     });
+
 };
 
-export function solve(ripeness) {
+export function solve(searchToken) {
     let state = new Map();
     state.set(0,3);
     state.set(1,7);
     let firstIdx = 0;
     let secondIdx = 1;
 
-    while(state.size < ripeness + 10) {
+    let lastSeq = '';
+
+    let loop = 0;
+
+    while(lastSeq !== searchToken) {
+        const oldRecipeSize = state.size;
         state = withNewRecipes(state, firstIdx, secondIdx);
         firstIdx = (state.get(firstIdx) + firstIdx + 1) % state.size;
         secondIdx = (state.get(secondIdx) + secondIdx + 1) % state.size;
+
+        // add new characters to our search term
+        for(let idx = oldRecipeSize; idx < state.size; idx++) {
+            lastSeq += state.get(idx);
+            if(lastSeq.length > searchToken.length) {
+                lastSeq = lastSeq.slice(1); // omit the first character, to match the size of the searchToken
+            }
+        }
     }
 
-    let res = '';
-    for(let idx = ripeness; idx < ripeness + 10; idx++) {
-        res += state.get(idx);
-    }
-    return res;
+    return state.size - searchToken.length;
 }
 
 function withNewRecipes(allRecipes, first, second) {
@@ -50,6 +63,7 @@ function withNewRecipes(allRecipes, first, second) {
 function toDigitArray(number) {
     return number.toString().split('').map(item => parseInt(item));
 }
+
 
 Array.prototype.asMap = function() {
     let res = new Map();
