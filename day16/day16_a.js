@@ -127,27 +127,6 @@ export class Sample {
         }
         return res
     }
-    static parseSecond(input) {
-        // split where the program begins
-        let lines = input.split(/\r?\n|\n/g);
-        let res = [];
-        //console.log(lines.length)
-
-        for(let i = 0; i < lines.length; i++) {
-            let before = lines[i];
-            let instr = lines[i+1];
-            let after = lines[i+2];
-            //console.log(before, instr, after);
-            if(before.indexOf("Before") >= 0 && after.indexOf("After") >= 0) {
-                res.push(new Sample(Register.ofStr(before), Instr.ofStr(instr), Register.ofStr(after)));
-            } else {
-                break;
-            }
-            i += 3;
-        }
-        return res
-    }
-
     constructor(before, instr, after) {
         this.before = before;
         this.instr = instr;
