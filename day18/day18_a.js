@@ -54,7 +54,6 @@ export default async function main() {
 
     area = Area.parse(EXAMPLE).tick(10); // total of 10 ticks
     compareArea = Area.parse(EXAMPLE_10);
-    console.log(area.state);
     area.state.toBe(compareArea.state);
     area.resourceValue.toBe(1147);
 
