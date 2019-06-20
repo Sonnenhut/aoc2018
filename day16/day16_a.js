@@ -37,21 +37,17 @@ export class Register {
         return this.r.toString() === other.r.toString(); // Really, javascript?!
     }
 
-    add = (a,b) => a + b;
-    addr = (a,b,c) => this.r[c] = this.add(this.r[a], this.r[b]);
-    addi = (a,b,c) => this.r[c] = this.add(this.r[a], b);
+    addr = (a,b,c) => this.r[c] = this.r[a] + this.r[b];
+    addi = (a,b,c) => this.r[c] = this.r[a] + b;
 
-    mul = (a,b) => a * b;
-    mulr = (a,b,c) => this.r[c] = this.mul(this.r[a], this.r[b]);
-    muli = (a,b,c) => this.r[c] = this.mul(this.r[a], b);
+    mulr = (a,b,c) => this.r[c] = this.r[a] * this.r[b];
+    muli = (a,b,c) => this.r[c] = this.r[a] * b;
 
-    ban = (a,b) => a & b;
-    banr = (a,b,c) => this.r[c] = this.ban(this.r[a], this.r[b]);
-    bani = (a,b,c) => this.r[c] = this.ban(this.r[a], b);
+    banr = (a,b,c) => this.r[c] = this.r[a] & this.r[b];
+    bani = (a,b,c) => this.r[c] = this.r[a] & b;
 
-    bor = (a,b) => a | b;
-    borr = (a,b,c) => this.r[c] = this.bor(this.r[a], this.r[b]);
-    bori = (a,b,c) => this.r[c] = this.bor(this.r[a], b);
+    borr = (a,b,c) => this.r[c] = this.r[a] | this.r[b];
+    bori = (a,b,c) => this.r[c] = this.r[a] | b;
 
     setr = (a,b,c) => this.r[c] = this.r[a];
     seti = (a,b,c) => this.r[c] = a;
@@ -64,9 +60,12 @@ export class Register {
     eqri = (a,b,c) => this.r[c] = this.r[a] === b ? 1 : 0;
     eqrr = (a,b,c) => this.r[c] = this.r[a] === this.r[b] ? 1 : 0;
 
+    static get operations() {
+        return Object.keys(Register.of(0)).filter(fn => fn.length === 4);
+    }
+
     static matchingFn(initial, instr, expected) {
-        return Object.keys(initial)
-            .filter(fn => fn.length === 4)
+        return Register.operations
             //.forEach((it) => console.log(it))
             .reduce((prev, fn) => {
                 let tmpReg = initial.copy();
@@ -88,7 +87,7 @@ export class Instr {
 
     static ofStr(txt) {
         let res = new Instr();
-        res._state = txt.split(" ").map(v => parseInt(v));
+        res._state = txt.split(" ").map(v => isNaN(v) ? v : parseInt(v));
         return res;
     }
 
