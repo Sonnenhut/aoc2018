@@ -66,13 +66,16 @@ export class Program {
     get pointerValue() {
         return this.register.r[this.pointer];
     }
+    get currInstr() {
+        return this.instr[this.pointerValue];
+    }
     incPointerValue() {
         this.register.r[this.pointer] += 1;
     }
     tick() {
         let res = true;
 
-        const instr = this.instr[this.pointerValue];
+        const instr = this.currInstr;
         if(instr) {
             this.register[instr.op](instr.a, instr.b, instr.c);
             // increment pointer/register value
