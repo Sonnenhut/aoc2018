@@ -21,9 +21,7 @@ class Day19AsJsImproved {
     }
     funcAtRow3(n) {
         let res = new Set(); // r0;
-
-        let i=0;
-        for(i = 0; i <= n; i++) {
+        for(let i = 0; i <= n; i++) {
             if(n % i === 0) {
                 res.add( i );
                 res.add( n/1 );
