@@ -1,7 +1,7 @@
 import { fileAsText } from '../common/files.js'
-const ROCKY = ".";
-const WET = "=";
-const NARROW = "|";
+export const ROCKY = ".";
+export const WET = "=";
+export const NARROW = "|";
 
 const riskLevels = new Map();
 riskLevels.set(ROCKY, 0);
@@ -48,25 +48,28 @@ export default async function main() {
     });
 };
 
-class Cave {
-    constructor(depth, targetCoords) {
+export class Cave {
+    constructor(depth, targetCoords, rectangleBounds = targetCoords) {
         this.depth = depth;
         this.targetCoords = Object.assign({}, targetCoords);
         this.regions = [];
-        this.init()
+        this._generateRectangle(rectangleBounds.x, rectangleBounds.y)
     }
-    init() {
-        for(let y = 0; y <= this.targetCoords.y; y++) {
-            for(let x = 0; x <= this.targetCoords.x; x++) {
-                let geoIdx = this._calcGeoIdx(x,y);
-                this.regions.push(new Region(x,y,geoIdx, this.depth));
+    _generateRectangle(destX, destY) {
+        for (let y = 0; y <= destY; y++) {
+            for (let x = 0; x <= destX; x++) {
+                let geoIdx = this._calcGeoIdx(x, y);
+                this.regions.push(new Region(x, y, geoIdx, this.depth));
             }
         }
     }
-
-     regionAt(x,y) {
-        let reg = this.regions.filter((region) => region.x === x && region.y === y)[0];
-        return reg;
+    regionAt(x,y) {
+        let res = null;
+        let filtered = this.regions.filter((region) => region.x === x && region.y === y);
+        if(filtered.length) {
+            res = filtered[0];
+        }
+        return res;
     }
     get summedRiskLvl() {
         return this.regions.reduce((acc, curr) => {
@@ -90,7 +93,7 @@ class Cave {
     }
 }
 
-class Region {
+export class Region {
     constructor(x,y,geoIdx, depth) {
         this.x=x;
         this.y=y;
