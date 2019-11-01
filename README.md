@@ -15,6 +15,7 @@ Uses a bunch of interesting stuff:
  - [createElementNS](https://developer.mozilla.org/de/docs/Web/API/Document/createElementNS)
  - [setAttributeNS](https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttributeNS)
  - [viewBox](https://www.sarasoueidan.com/blog/svg-coordinate-systems/)
+ - [Dijkstra (for pathfinding)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
  
  built with: [vanilla-js](http://vanilla-js.com/)
  
