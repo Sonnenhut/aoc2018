@@ -10,7 +10,7 @@ export default async function main() {
     });
 };
 
-function solve(coordinates, maxManhattenDistanceSum) {
+function solve(coordinates, manhattanDistanceSum) {
     // how big is our grid
     const maxX = coordinates.map(coord => coord.x).reduce((prev, curr) => prev > curr ? prev : curr);
     const maxY = coordinates.map(coord => coord.y).reduce((prev, curr) => prev > curr ? prev : curr);
@@ -21,7 +21,7 @@ function solve(coordinates, maxManhattenDistanceSum) {
             const distances = coordinates.map(coord => new Distance(new Coordinate(coord.id, x, y), new Coordinate(coord.id,coord.x - x, coord.y - y)));
             // add up all manhattan distances
             const totalManhattanDistance = distances.map(item => item.manhattanDistance).reduce((left,right) => left + right);
-            if(totalManhattanDistance < maxManhattenDistanceSum) {
+            if(totalManhattanDistance < manhattanDistanceSum) {
                 res += 1;
             }
         }
