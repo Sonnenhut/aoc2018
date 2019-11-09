@@ -1,12 +1,11 @@
 import {fileAsText} from "../common/files.js";
 
 export default async function main() {
-
     let nbot = Nanobot.ofStr("pos=<1,2,3>, r=4");
-    nbot._x.toBe(1);
-    nbot._y.toBe(2);
-    nbot._z.toBe(3);
-    nbot._r.toBe(4);
+    nbot.x.toBe(1);
+    nbot.y.toBe(2);
+    nbot.z.toBe(3);
+    nbot.r.toBe(4);
 
     nbot = Nanobot.ofStr("pos=<0,0,0>, r=4");
     nbot.inRangeOf(Nanobot.ofStr("pos=<1,0,0>, r=1")).toBe(true);
@@ -40,20 +39,29 @@ export default async function main() {
     });
 };
 
-function withLargestR(nbots) {
+export function withLargestR(nbots) {
     return nbots.reduce((acc, curr) => acc._r > curr._r ? acc : curr, {_r:0})
 }
 
-class Nanobot {
+export class Nanobot {
     constructor(x,y,z,r) {
-        this._x = x;
-        this._y = y;
-        this._z = z;
-        this._r = r;
+        const round = (num) => num < 0 ? Math.floor(num) : Math.ceil(num);
+        this._x = round(x);
+        this._y = round(y);
+        this._z = round(z);
+        this._r = round(r);
     }
     static ofStr(str){
         const match = /pos=<([\-0-9]*),([\-0-9]*),([\-0-9]*)>, r=([\-0-9]*)/.exec(str);
         return new Nanobot(parseInt(match[1]),parseInt(match[2]),parseInt(match[3]),parseInt(match[4]));
+    }
+    static intersectingAll(others) {
+        const maxx = others.reduce((acc,curr) => Math.abs(curr.x) > acc ? Math.abs(curr.x) : acc, 0);
+        const maxy = others.reduce((acc,curr) => Math.abs(curr.y) > acc ? Math.abs(curr.y) : acc, 0);
+        const maxz = others.reduce((acc,curr) => Math.abs(curr.z) > acc ? Math.abs(curr.z) : acc, 0);
+
+        const r = maxx + maxy + maxz;
+        return new Nanobot(0,0,0, r);
     }
 
     inRangeOf(other) {
@@ -63,7 +71,52 @@ class Nanobot {
         z=other._z - this._z;
         return Math.abs(x)+Math.abs(y)+Math.abs(z) <= this._r;
     }
+
+    intersecting(other) {
+        return this.cornersIntersecting(other) || other.cornersIntersecting(this);
+    }
+    cornersIntersecting(other) {
+        return this.corners().reduce((acc, corner) => {
+            return acc || other.inRangeOf(corner); // test other, because the corner has no radius
+        }, false);
+    }
+
+    corners() {
+        if(this.r === 1) {
+            return [this];
+        } else {
+            return this.unfold(0, this.r / 3/* go into each corner*/)
+        }
+    }
+    split() {
+        const newRadius = this.r / 2; /* half the radius */
+        const delta = newRadius / 3; /* each of the three dimensions gets equal space */
+        // halving the radius - then we can split into 8 parts that, together, take up the same space - split
+        return this.unfold(newRadius, delta)
+    }
+    unfold(newR, delta) { // unfold into 8 parts
+        let res = [];
+        // upper 4 according to y axis
+        res.push(new Nanobot(this.x - delta, this.y - delta, this.z - delta, newR));
+        res.push(new Nanobot(this.x + delta, this.y - delta, this.z - delta, newR));
+        res.push(new Nanobot(this.x - delta, this.y - delta, this.z + delta, newR));
+        res.push(new Nanobot(this.x + delta, this.y - delta, this.z + delta, newR));
+        // lower 4 according to y axis
+        res.push(new Nanobot(this.x - delta, this.y + delta, this.z - delta, newR));
+        res.push(new Nanobot(this.x + delta, this.y + delta, this.z - delta, newR));
+        res.push(new Nanobot(this.x - delta, this.y + delta, this.z + delta, newR));
+        res.push(new Nanobot(this.x + delta, this.y + delta, this.z + delta, newR));
+        return res;
+    }
     countInRange(others) {
         return others.reduce((acc, curr) => this.inRangeOf(curr) ? acc + 1 : acc , 0)
     }
+    countIntersecting(others) {
+        return others.reduce((acc, other) => this.intersecting(other) ? acc + 1 : acc , 0)
+    }
+    get distanceToCenter() {return this.x + this.y + this.z}
+    get x() { return this._x; }
+    get y() { return this._y; }
+    get z() { return this._z; }
+    get r() { return this._r; }
 }
