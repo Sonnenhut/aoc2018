@@ -1,7 +1,7 @@
 import {fileAsText} from "../common/files.js";
 
 const ENABLE_LOG = false;
-const EXAMPLE =
+export const EXAMPLE =
 `Immune System:
 17 units each with 5390 hit points (weak to radiation, bludgeoning) with an attack that does 4507 fire damage at initiative 2
 989 units each with 1274 hit points (immune to fire; weak to bludgeoning, slashing) with an attack that does 25 slashing damage at initiative 3
@@ -25,15 +25,22 @@ export default async function main() {
     });
 };
 
-function parseArmies(input) {
+export function parseArmies(input) {
     const armiesStr = input.split(/\n\n/);
     const armies = armiesStr.map(armyStr => new Army(armyStr));
     return {immuneSystem : getImmuneSystem(armies), infection : getInfection(armies)}
 }
 
-function fightTillEnd(lArmy, rArmy) {
-    while(lArmy.totalUnits && rArmy.totalUnits) {
+export function fightTillEnd(lArmy, rArmy) {
+    let loopId = 0;
+    while(lArmy.totalUnits && rArmy.totalUnits ) {
         fight(lArmy, rArmy);
+
+        const newLoopId = lArmy.totalUnits + "_" + rArmy.totalUnits; // prevents deadlocks
+        if(loopId === newLoopId) {
+            throw "Stalemate";
+        }
+        loopId = newLoopId
     }
     return lArmy.totalUnits || rArmy.totalUnits
 }
@@ -85,9 +92,11 @@ class Army {
         this.name = parsed[1];
         const groupsStr = parsed[2];
         this._groups = groupsStr.split('\n').map(gStr => new Group(gStr));
-        //this._groups = this._groups;
         this._groups.forEach((grp, idx) => grp.name = `${this.name } group ${idx+1}`);
         this._groups.forEach((grp) => grp.armyName = this.name)
+    }
+    boost(amount) {
+        this.groups.forEach(group => group.boost(amount))
     }
     get isImmuneSystem() {
         return this.name === "Immune System";
@@ -96,7 +105,7 @@ class Army {
         return this.name === "Infection";
     }
     get groups() {
-        return this._groups.filter(grp => 0 !== grp.unitCnt);
+        return this._groups.filter(grp => grp.unitCnt !== 0);
     }
     get totalUnits() {
         return this.groups.reduce((acc, group) => acc + group.unitCnt, 0);
@@ -113,12 +122,15 @@ class Group {
         this.initiative = parseInt(parsed[5]);
         this.immunities = /immune to (.*?)[\);]/.exec(input);
         this.immunities = this.immunities ? this.immunities[1].split(', ') : [];
-        this.weaknesses = /weak to (.*)[\);]/.exec(input);
+        this.weaknesses = /weak to (.*?)[\);]/.exec(input);
         this.weaknesses = this.weaknesses ? this.weaknesses[1].split(', ') : [];
 
         this.name = '';
         this.armyName = '';
         this.target = undefined;
+    }
+    boost(amount) {
+        this.damage += amount;
     }
     get effectivePower() {
         return this.unitCnt * this.damage;
@@ -136,6 +148,7 @@ class Group {
         this.target = undefined; // initialize previous target
         const possibletargets = others
             .filter(other => other.armyName !== this.armyName)
+            .filter(other => this.possibleDamage(other) !== 0)
             .sort((left, right) => {
                 let res =  this.possibleDamage(left) - this.possibleDamage(right);
                 res = res === 0 ? left.effectivePower - right.effectivePower : res;
@@ -144,17 +157,15 @@ class Group {
             });
 
         possibletargets.forEach(other => log(`${this.name} would deal ${other.name} ${this.possibleDamage(other)} damage`));
-        log('selecting target out of possible', Object.assign({},this), Object.assign({},possibletargets));
         while(possibletargets.length && !this.target) {
             const candidate = possibletargets.pop();
-            if(this.possibleDamage(candidate) > 0) {
-                this.target = candidate; // only select a target that is not immune to us
-            }
+            this.target = candidate; // only select a target that is not immune to us
         }
         return this.target;
     }
     attackTarget() {
-        if(this.target && this.possibleDamage(this.target) > 0 && this.target.unitCnt > 0) {
+        if(this.target && this.possibleDamage(this.target) > 0 /*&& this.target.unitCnt > 0*/) {
+            if(this.target.unitCnt === 0) {console.warn("no unitcnt but attacking",Object.assign({},this), Object.assign({},this.target))}
             const casualties = this.target.receiveDamage(this.possibleDamage(this.target));
             log(`${this.name} attacks ${this.target.name}, killing ${casualties} units`)
         }
