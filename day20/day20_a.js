@@ -1,8 +1,6 @@
 import {fileAsText} from '../common/files.js'
-import {PriorityQueue} from "../day23/PriorityQueue.js";
+import {PriorityQueue} from "./PriorityQueue.js";
 
-export const SIMPLE = `^N(N|W)W$`;
-export const BRANCH_IN_BRANCH = `^N(N(N|W)|W)N(N|W)S$`;
 export const EXAMPLE = `^ENWWW(NEEE|SSE(EE|N))$`;
 export const EXAMPLE_31 = "^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$";
 export const EXAMPLE_23 = "^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$";
@@ -30,8 +28,6 @@ export default async function main() {
         res.toBe(3046);
         return res;
     });
-
-
 };
 
 export function solveA(input) {
@@ -39,7 +35,6 @@ export function solveA(input) {
     let dijk = new Dijkstra(area.nodes, area.root);
     let allNodes = dijk.run();
 
-    console.log(allNodes);
     return allNodes.map(node => node.distance).reduce((acc, curr) => Math.max(acc, curr),0)
 }
 
@@ -142,7 +137,7 @@ export class Area {
     }
 }
 
-class Dijkstra {
+export class Dijkstra {
     constructor(nodes, startNode) {
         nodes.forEach(node => {
             node.distance = Number.MAX_SAFE_INTEGER;

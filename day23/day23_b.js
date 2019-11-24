@@ -1,6 +1,6 @@
 import {fileAsText} from "../common/files.js";
 import {Nanobot} from "./day23_a.js";
-import {PriorityQueue} from "./PriorityQueue.js";
+import {PriorityQueue} from "../day20/PriorityQueue.js";
 
 export default async function main() {
     let nbots = [
