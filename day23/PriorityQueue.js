@@ -12,6 +12,12 @@ export class PriorityQueue {
         withSameIdx.push(node);
         this._nodes.set(idx, withSameIdx);
     }
+    resort(changedNode, oldIdx) {
+        let atOldIdx = this._nodes.get(oldIdx) || [];
+        atOldIdx = atOldIdx.filter(other => other !== changedNode);
+        this._nodes.set(oldIdx, atOldIdx);
+        this.add(changedNode);
+    }
     addAll(nodes) {
         nodes.forEach(node => {
             this.add(node)
