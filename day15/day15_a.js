@@ -260,7 +260,6 @@ export default async function main() {
     outcome_part1(EXAMPLE_35_ROUNDS).toBe([35, 793]);
     outcome_part1(EXAMPLE_54_ROUNDS).toBe([54, 536]);
     outcome_part1(EXAMPLE_20_ROUNDS).toBe([20, 937]);
-    //outcome(EXAMPLE_REDDIT_67).toBe([67, 200]);// <- still a bug here
     outcome_part1(EXAMPLE_REDDIT_38).toBe([38, 486]);
 
     return fileAsText('day15/input.txt').then(input => {
